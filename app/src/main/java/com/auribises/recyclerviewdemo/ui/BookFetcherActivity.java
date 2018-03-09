@@ -4,6 +4,8 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.GridLayoutManager;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.widget.Toast;
 
@@ -14,6 +16,7 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.auribises.recyclerviewdemo.R;
+import com.auribises.recyclerviewdemo.adapter.BookAdapter;
 import com.auribises.recyclerviewdemo.model.Book;
 import com.auribises.recyclerviewdemo.utility.Util;
 
@@ -27,6 +30,7 @@ public class BookFetcherActivity extends AppCompatActivity {
 
     RecyclerView recyclerView;
     ArrayList<Book> bookList;
+    BookAdapter bookAdapter;
 
     void initViews(){
         recyclerView = findViewById(R.id.recyclerView);
@@ -69,7 +73,20 @@ public class BookFetcherActivity extends AppCompatActivity {
                                 bookList.add(book);
                             }
 
+
+
                             Toast.makeText(BookFetcherActivity.this,"Books Fetched Successfully !!",Toast.LENGTH_LONG).show();
+
+                            bookAdapter = new BookAdapter(BookFetcherActivity.this,R.layout.list_item,bookList);
+
+                            LinearLayoutManager linearLayoutManager = new LinearLayoutManager(BookFetcherActivity.this);
+                            GridLayoutManager gridLayoutManager = new GridLayoutManager(BookFetcherActivity.this,2);
+
+                            recyclerView.setLayoutManager(linearLayoutManager);
+                            //recyclerView.setLayoutManager(gridLayoutManager);
+
+                            recyclerView.setAdapter(bookAdapter);
+
 
                         }catch (Exception e){
                             e.printStackTrace();
