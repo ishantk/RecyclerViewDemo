@@ -1,5 +1,6 @@
 package com.auribises.recyclerviewdemo.ui;
 
+import android.content.Intent;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.support.v7.app.AppCompatActivity;
@@ -18,6 +19,8 @@ import com.android.volley.toolbox.Volley;
 import com.auribises.recyclerviewdemo.R;
 import com.auribises.recyclerviewdemo.adapter.BookAdapter;
 import com.auribises.recyclerviewdemo.model.Book;
+import com.auribises.recyclerviewdemo.service.BookFetchIntentService;
+import com.auribises.recyclerviewdemo.service.BookFetchService;
 import com.auribises.recyclerviewdemo.utility.Util;
 
 import org.json.JSONArray;
@@ -112,9 +115,20 @@ public class BookFetcherActivity extends AppCompatActivity {
         setContentView(R.layout.activity_book_fetcher);
         initViews();
 
-        if(isInternetConnected())
+        /*if(isInternetConnected())
             fetchBooks();
         else
             Toast.makeText(this,"Please Connect to the Internet and Try Again",Toast.LENGTH_LONG).show();
+        */
+
+
+        if(isInternetConnected()) {
+            Intent intent = new Intent(BookFetcherActivity.this, BookFetchIntentService.class);
+            startService(intent);
+            //stopService(intent);
+        } else {
+            Toast.makeText(this, "Please Connect to the Internet and Try Again", Toast.LENGTH_LONG).show();
+        }
+
     }
 }
