@@ -13,11 +13,7 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity android:name=".ui.BookFetcherActivity">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
 
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
         </activity>
 
         <service
@@ -26,8 +22,15 @@
             android:exported="true" />
         <service
             android:name=".service.BookFetchIntentService"
-            android:exported="true"
-            android:enabled="true" />
+            android:enabled="true"
+            android:exported="true" />
+
+        <activity android:name=".ui.UserRegistrationActivity">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
     </application>
 
 </manifest>
