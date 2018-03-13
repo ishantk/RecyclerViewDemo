@@ -14,12 +14,6 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 
 
-/**
- * An {@link IntentService} subclass for handling asynchronous task requests in
- * a service on a separate handler thread.
- * <p>
- * TODO: Customize class - update intent actions and extra parameters.
- */
 public class BookFetchIntentService extends IntentService {
 
     public BookFetchIntentService() {
@@ -28,6 +22,8 @@ public class BookFetchIntentService extends IntentService {
 
     @Override
     protected void onHandleIntent(Intent intent) {
+
+        Log.i("Service","onHandleIntent");
 
         StringBuilder response = new StringBuilder();
 
@@ -48,56 +44,17 @@ public class BookFetchIntentService extends IntentService {
 
             Log.i("Service",response.toString());
 
+            Intent responseIntent = new Intent("response.rcvd");
+            responseIntent.putExtra("keyResponse",response.toString());
+            sendBroadcast(responseIntent);
+
+
         }catch (Exception e){
             e.printStackTrace();
         }
 
-        new BookTask().execute();
-        Log.i("Service","onHandleIntent");
+
     }
 
-    class BookTask extends AsyncTask {
-
-        StringBuilder response = new StringBuilder();
-
-        @Override
-        protected Object doInBackground(Object[] objects) {
-
-            try {
-                URL url = new URL(Util.URL_BOOKS_FETCH);
-
-                HttpURLConnection httpURLConnection = (HttpURLConnection)url.openConnection();
-
-                InputStream inputStream = httpURLConnection.getInputStream();
-                InputStreamReader reader = new InputStreamReader(inputStream);
-                BufferedReader bufferedReader = new BufferedReader(reader);
-
-                String line = "";
-
-                while((line = bufferedReader.readLine()) != null){
-                    response.append(line+"\n");
-                }
-
-                Log.i("Service",response.toString());
-
-            }catch (Exception e){
-                e.printStackTrace();
-            }
-
-            return null;
-        }
-
-        @Override
-        protected void onPostExecute(Object o) {
-            super.onPostExecute(o);
-            Log.i("Service",response.toString());
-        }
-
-        @Override
-        protected void onPreExecute() {
-            super.onPreExecute();
-            Log.i("Service",response.toString());
-        }
-    }
 
 }

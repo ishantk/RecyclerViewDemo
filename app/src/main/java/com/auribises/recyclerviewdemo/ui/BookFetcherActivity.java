@@ -1,8 +1,16 @@
 package com.auribises.recyclerviewdemo.ui;
 
+import android.app.Notification;
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.os.Build;
+import android.support.v4.app.NotificationCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.GridLayoutManager;
@@ -34,6 +42,8 @@ public class BookFetcherActivity extends AppCompatActivity {
     RecyclerView recyclerView;
     ArrayList<Book> bookList;
     BookAdapter bookAdapter;
+
+    ResponseReceiver responseReceiver;
 
     void initViews(){
         recyclerView = findViewById(R.id.recyclerView);
@@ -121,14 +131,99 @@ public class BookFetcherActivity extends AppCompatActivity {
             Toast.makeText(this,"Please Connect to the Internet and Try Again",Toast.LENGTH_LONG).show();
         */
 
+        responseReceiver = new ResponseReceiver();
 
-        if(isInternetConnected()) {
-            Intent intent = new Intent(BookFetcherActivity.this, BookFetchIntentService.class);
+        IntentFilter filter = new IntentFilter();
+        filter.addAction("response.rcvd");
+        //filter.addAction("any.action.of.your.choice");
+        //filter.addAction(Intent.ACTION_BATTERY_LOW);
+
+        registerReceiver(responseReceiver,filter);
+
+        if(isInternetConnected()){
+
+            Intent intent = new Intent(BookFetcherActivity.this,BookFetchIntentService.class);
             startService(intent);
+
             //stopService(intent);
-        } else {
-            Toast.makeText(this, "Please Connect to the Internet and Try Again", Toast.LENGTH_LONG).show();
+
+        }else{
+            Toast.makeText(this,"Please Connect to the Internet and Try Again",Toast.LENGTH_LONG).show();
+        }
+    }
+
+    class ResponseReceiver extends BroadcastReceiver{
+
+        @Override
+        public void onReceive(Context context, Intent intent) {
+
+            String response = intent.getStringExtra("keyResponse");
+            Toast.makeText(BookFetcherActivity.this,"Response: "+response,Toast.LENGTH_LONG).show();
+
+
+            try {
+
+                JSONObject jsonObject = new JSONObject(response);
+                JSONArray jsonArray = jsonObject.getJSONArray(Util.BOOK_ARRAY);
+
+                String p="",n="",a="";
+
+                for(int i=0;i<jsonArray.length();i++){
+                    JSONObject jObj = jsonArray.getJSONObject(i);
+
+                    p = jObj.getString("price");
+                    n = jObj.getString("name");
+                    a = jObj.getString("author");
+
+                    Book book = new Book(p,n,a);
+                    bookList.add(book);
+                }
+
+
+
+                Toast.makeText(BookFetcherActivity.this,"Books Fetched Successfully !!",Toast.LENGTH_LONG).show();
+
+                bookAdapter = new BookAdapter(BookFetcherActivity.this,R.layout.list_item,bookList);
+
+                LinearLayoutManager linearLayoutManager = new LinearLayoutManager(BookFetcherActivity.this);
+                GridLayoutManager gridLayoutManager = new GridLayoutManager(BookFetcherActivity.this,2);
+
+                recyclerView.setLayoutManager(linearLayoutManager);
+                //recyclerView.setLayoutManager(gridLayoutManager);
+
+                recyclerView.setAdapter(bookAdapter);
+
+                showNotification();
+
+
+            }catch (Exception e){
+                e.printStackTrace();
+            }
+
+        }
+    }
+
+
+    void showNotification(){
+
+        NotificationManager notificationManager = (NotificationManager)getSystemService(NOTIFICATION_SERVICE);
+
+        String chId = "myChannelId";
+
+        if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            NotificationChannel channel = new NotificationChannel(chId,"MyChannel",NotificationManager.IMPORTANCE_HIGH);
+            notificationManager.createNotificationChannel(channel);
         }
 
+        NotificationCompat.Builder builder = new NotificationCompat.Builder(this,chId);
+        builder.setSmallIcon(android.R.drawable.ic_menu_add);
+        builder.setContentTitle("This is Title");
+        builder.setContentText("This is Text of Notification");
+
+        Notification notification = builder.build();
+
+        notificationManager.notify(101,notification);
+
     }
+
 }
