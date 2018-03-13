@@ -3,6 +3,7 @@ package com.auribises.recyclerviewdemo.ui;
 import android.app.Notification;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -219,6 +220,17 @@ public class BookFetcherActivity extends AppCompatActivity {
         builder.setSmallIcon(android.R.drawable.ic_menu_add);
         builder.setContentTitle("This is Title");
         builder.setContentText("This is Text of Notification");
+
+        Intent intent = new Intent(BookFetcherActivity.this,UserRegistrationActivity.class);
+        PendingIntent pendingIntent = PendingIntent.getActivity(this,101,intent,PendingIntent.FLAG_UPDATE_CURRENT);
+
+        // Style Should be a BigTextStyle if you wish to add buttons
+        builder.setStyle(new NotificationCompat.BigTextStyle().bigText("This is Big Text"));
+        builder.addAction(android.R.drawable.ic_menu_add,"Add",pendingIntent);
+        builder.addAction(android.R.drawable.ic_menu_delete,"Delete",pendingIntent);
+
+
+        builder.setContentIntent(pendingIntent);
 
         Notification notification = builder.build();
 
