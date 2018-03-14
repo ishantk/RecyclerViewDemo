@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="16dp"
+    android:orientation="vertical"
+    tools:context="com.auribises.recyclerviewdemo.ui.MiscActivity">
+
+    <TextView
+        android:id="@+id/textViewTitle"
+        android:textSize="20dp"
+        android:textColor="@color/colorPrimaryDark"
+        android:layout_gravity="center"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="12dp"
+        android:text="Welcome User" />
+
+    <EditText
+        android:id="@+id/editTextName"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:ems="10"
+        android:inputType="textPersonName"
+        android:layout_marginTop="12dp"
+        android:hint="Please Enter Your Name" />
+
+    <Button
+        android:id="@+id/buttonSubmit"
+        android:layout_gravity="center"
+        android:layout_width="wrap_content"
+        android:layout_marginTop="30dp"
+        android:layout_height="wrap_content"
+        android:text="Submit" />
+
+    <ImageView
+        android:id="@+id/imageView"
+        android:layout_marginTop="20dp"
+        android:layout_gravity="center"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
+        android:background="@drawable/myanimation"/>
+</LinearLayout>
